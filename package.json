@@ -1,6 +1,6 @@
 {
   "name": "datagenstudio",
-  "version": "1.0.4",
+  "version": "1.0.0",
   "description": "DataGen Studio: Bun-powered synthetic data API and Swagger-based payload generator.",
   "type": "module",
   "module": "index.ts",
