@@ -3,6 +3,8 @@
 **Simple tool built on the Bun runtime to see how cool Bun really is.**
 Learn more about Bun here: https://bun.com/docs
 
+**This tool exposes REST endpoints ([API Docs](/api-docs.html)) to easily consume and generate data programmatically (e.g., seed test frameworks before runs).**
+
 Lightweight HTTP API that produces synthetic banking data (customers, accounts, transactions) for testing dashboards or integrations. Location-aware data keeps phone numbers, addresses, and postal codes consistent with the selected country and state.
 
 ## UI preview
