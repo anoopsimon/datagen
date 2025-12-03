@@ -1,0 +1,140 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API Docs - Synthetic Banking Data</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      body {
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      .doc-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+      }
+      .doc-section {
+        margin: 18px 0;
+      }
+      .doc-section h3 {
+        margin: 0 0 6px;
+      }
+      .endpoint {
+        border: 1px solid var(--border);
+        background: var(--panel);
+        padding: 12px 14px;
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+        margin-bottom: 12px;
+      }
+      .method {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 12px;
+        margin-right: 8px;
+        color: #0b1021;
+      }
+      .get { background: linear-gradient(135deg, #6cf1c6, #3fe0e6); }
+      table.doc-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 8px;
+        font-size: 14px;
+      }
+      table.doc-table th,
+      table.doc-table td {
+        border: 1px solid var(--border);
+        padding: 8px;
+        text-align: left;
+      }
+      table.doc-table th {
+        background: rgba(108, 241, 198, 0.08);
+      }
+      code {
+        color: var(--accent);
+      }
+      .pill-link {
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <header class="doc-header" style="padding: 20px 0 10px;">
+      <div>
+        <div class="pill">Bun</div>
+        <h1 style="margin: 6px 0 0;">API Docs</h1>
+        <p class="lede" style="margin: 4px 0 0;">REST endpoints for synthetic banking data.</p>
+      </div>
+      <a class="pill-link" href="/">← Back to app</a>
+    </header>
+
+    <main>
+      <section class="doc-section">
+        <h3>Base URL</h3>
+        <code>http://localhost:3000</code>
+      </section>
+
+      <section class="doc-section">
+        <h3>Endpoints</h3>
+
+        <div class="endpoint">
+          <div><span class="method get">GET</span><code>/health</code></div>
+          <p class="lede">Readiness check.</p>
+        </div>
+
+        <div class="endpoint">
+          <div><span class="method get">GET</span><code>/customers</code></div>
+          <p class="lede">Returns generated customers.</p>
+          <pre class="snippet">curl "http://localhost:3000/customers?customers=5&country=india&state=karnataka&emailDomains=gmail.com,corp.com"</pre>
+        </div>
+
+        <div class="endpoint">
+          <div><span class="method get">GET</span><code>/accounts</code></div>
+          <p class="lede">Returns customers plus their generated accounts.</p>
+          <pre class="snippet">curl "http://localhost:3000/accounts?customers=5&minAccounts=1&maxAccounts=2&country=united-states&state=california"</pre>
+        </div>
+
+        <div class="endpoint">
+          <div><span class="method get">GET</span><code>/transactions</code></div>
+          <p class="lede">Returns customers, accounts, and transactions.</p>
+          <pre class="snippet">curl "http://localhost:3000/transactions?customers=5&minTransactions=2&maxTransactions=4&country=australia&state=vic&emailDomains=test.io"</pre>
+        </div>
+      </section>
+
+      <section class="doc-section">
+        <h3>Query Parameters</h3>
+        <table class="doc-table">
+          <thead>
+            <tr><th>Param</th><th>Default</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>country</code></td><td><code>australia</code></td><td>One of <code>australia</code>, <code>india</code>, <code>united-kingdom</code>/<code>uk</code>, <code>united-states</code>/<code>usa</code>.</td></tr>
+            <tr><td><code>state</code></td><td>random</td><td>State/region key for chosen country (e.g. <code>vic</code>, <code>karnataka</code>, <code>england</code>, <code>california</code>).</td></tr>
+            <tr><td><code>emailDomains</code></td><td><code>example.com</code></td><td>Comma-separated domains; invalid entries ignored; one picked per customer.</td></tr>
+            <tr><td><code>seed</code></td><td>current timestamp</td><td>Deterministic generation when provided.</td></tr>
+            <tr><td><code>customers</code></td><td><code>10</code></td><td>Number of customers.</td></tr>
+            <tr><td><code>minAccounts</code></td><td><code>1</code></td><td>Minimum accounts per customer.</td></tr>
+            <tr><td><code>maxAccounts</code></td><td><code>3</code></td><td>Maximum accounts per customer.</td></tr>
+            <tr><td><code>minTransactions</code></td><td><code>3</code></td><td>Minimum transactions per account.</td></tr>
+            <tr><td><code>maxTransactions</code></td><td><code>8</code></td><td>Maximum transactions per account.</td></tr>
+            <tr><td><code>currency</code></td><td>country default</td><td>Override default currency.</td></tr>
+            <tr><td><code>minAmount</code></td><td><code>10</code></td><td>Minimum transaction amount.</td></tr>
+            <tr><td><code>maxAmount</code></td><td><code>500</code></td><td>Maximum transaction amount.</td></tr>
+            <tr><td><code>startDate</code></td><td>1 month ago</td><td>ISO date inclusive.</td></tr>
+            <tr><td><code>endDate</code></td><td>now</td><td>ISO date inclusive.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="doc-section">
+        <h3>Responses</h3>
+        <p class="lede">All endpoints return <code>application/json</code> with a <code>meta</code> block describing generation config.</p>
+      </section>
+    </main>
+  </body>
+</html>
