@@ -429,19 +429,29 @@ const escapeXml = (value: string): string =>
     .replace(/\"/g, "&quot;")
     .replace(/'/g, "&apos;");
 
-const toXml = (value: unknown, tag = "response"): string => {
+const toXml = (value: unknown, tag = "response", depth = 0): string => {
+  const pad = "  ".repeat(depth);
+  const open = `${pad}<${tag}>`;
+  const close = `</${tag}>`;
+
   if (value === null || value === undefined) {
-    return `<${tag}></${tag}>`;
+    return `${open}${close}`;
   }
+
   if (Array.isArray(value)) {
-    const children = value.map((v) => toXml(v, "item")).join("");
-    return `<${tag}>${children}</${tag}>`;
+    if (value.length === 0) return `${open}${close}`;
+    const children = value.map((v) => toXml(v, "item", depth + 1)).join("\n");
+    return `${open}\n${children}\n${pad}${close}`;
   }
+
   if (typeof value === "object") {
-    const parts = Object.entries(value as Record<string, unknown>).map(([k, v]) => toXml(v, k));
-    return `<${tag}>${parts.join("")}</${tag}>`;
+    const entries = Object.entries(value as Record<string, unknown>);
+    if (entries.length === 0) return `${open}${close}`;
+    const parts = entries.map(([k, v]) => toXml(v, k, depth + 1)).join("\n");
+    return `${open}\n${parts}\n${pad}${close}`;
   }
-  return `<${tag}>${escapeXml(String(value))}</${tag}>`;
+
+  return `${open}${escapeXml(String(value))}${close}`;
 };
 
 const toYaml = (value: unknown, indent = 0): string => {
@@ -496,7 +506,7 @@ const formatResponse = (data: unknown, format: ResponseFormat, init?: ResponseIn
     });
   }
   if (format === "xml") {
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>` + toXml(data);
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>\n` + toXml(data);
     return new Response(xml, {
       headers: {
         "Content-Type": "application/xml",
