@@ -1,4 +1,4 @@
-type Random = () => number;
+﻿type Random = () => number;
 
 const mulberry32 = (seed: number): Random => {
   let t = seed + 0x6d2b79f5;
@@ -15,7 +15,12 @@ const pick = <T>(rand: Random, list: T[]): T =>
 const randomInt = (rand: Random, min: number, max: number): number =>
   Math.floor(rand() * (max - min + 1)) + min;
 
-const randomFloat = (rand: Random, min: number, max: number, decimals = 2): number => {
+const randomFloat = (
+  rand: Random,
+  min: number,
+  max: number,
+  decimals = 2,
+): number => {
   const value = rand() * (max - min) + min;
   return Number(value.toFixed(decimals));
 };
@@ -24,6 +29,11 @@ const randomDate = (rand: Random, start: Date, end: Date): string => {
   const ts = start.getTime() + rand() * (end.getTime() - start.getTime());
   return new Date(ts).toISOString();
 };
+
+const normalizeKey = (value: string | null): string =>
+  (value ?? "").trim().toLowerCase().replace(/[\s_]+/g, "-");
+
+const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
 const firstNames = [
   "Alex",
@@ -59,21 +69,6 @@ const lastNames = [
   "King",
 ];
 
-const streets = [
-  "George St",
-  "Collins St",
-  "Queen St",
-  "Elizabeth St",
-  "Bourke St",
-  "Pitt St",
-  "Swanston St",
-  "Spring St",
-  "Bridge Rd",
-  "Oxford St",
-  "Flinders St",
-  "Lygon St",
-];
-
 const merchants = [
   "ANZ ATM",
   "Uber",
@@ -90,6 +85,269 @@ const merchants = [
   "Spotify",
 ];
 
+type TerritoryState = {
+  key: string;
+  name: string;
+  cities: string[];
+  postalPrefix: string;
+  areaCodes?: string[];
+};
+
+type Territory = {
+  key: string;
+  label: string;
+  currency: string;
+  streetNames: string[];
+  states: TerritoryState[];
+  mobile: (rand: Random, state: TerritoryState) => string;
+  landline?: (rand: Random, state: TerritoryState) => string;
+  postalCode: (rand: Random, state: TerritoryState) => string;
+};
+
+const territories: Record<string, Territory> = {
+  australia: {
+    key: "australia",
+    label: "Australia",
+    currency: "AUD",
+    streetNames: [
+      "George St",
+      "Collins St",
+      "Queen St",
+      "Elizabeth St",
+      "Bourke St",
+      "Pitt St",
+      "Swanston St",
+      "Spring St",
+      "Bridge Rd",
+      "Oxford St",
+      "Flinders St",
+      "Lygon St",
+    ],
+    states: [
+      {
+        key: "nsw",
+        name: "New South Wales",
+        cities: ["Sydney", "Newcastle", "Wollongong"],
+        postalPrefix: "2",
+        areaCodes: ["02"],
+      },
+      {
+        key: "vic",
+        name: "Victoria",
+        cities: ["Melbourne", "Geelong", "Ballarat"],
+        postalPrefix: "3",
+        areaCodes: ["03"],
+      },
+      {
+        key: "qld",
+        name: "Queensland",
+        cities: ["Brisbane", "Gold Coast", "Cairns"],
+        postalPrefix: "4",
+        areaCodes: ["07"],
+      },
+      {
+        key: "wa",
+        name: "Western Australia",
+        cities: ["Perth", "Fremantle", "Bunbury"],
+        postalPrefix: "6",
+        areaCodes: ["08"],
+      },
+    ],
+    mobile: (rand) => `04${randomInt(rand, 10000000, 99999999)}`,
+    landline: (rand, state) => {
+      const area = pick(rand, state.areaCodes ?? ["02", "03", "07", "08"]);
+      return `${area} ${randomInt(rand, 200, 999)} ${randomInt(rand, 100000, 999999)}`;
+    },
+    postalCode: (rand, state) => `${state.postalPrefix}${randomInt(rand, 0, 999).toString().padStart(3, "0")}`,
+  },
+  india: {
+    key: "india",
+    label: "India",
+    currency: "INR",
+    streetNames: [
+      "MG Road",
+      "Brigade Road",
+      "Cambridge Layout",
+      "Ring Road",
+      "Indiranagar Main Rd",
+      "Bandra Kurla Complex",
+      "Linking Road",
+      "Park Street",
+      "Anna Salai",
+      "FC Road",
+    ],
+    states: [
+      {
+        key: "karnataka",
+        name: "Karnataka",
+        cities: ["Bengaluru", "Mysuru", "Mangaluru"],
+        postalPrefix: "56",
+      },
+      {
+        key: "maharashtra",
+        name: "Maharashtra",
+        cities: ["Mumbai", "Pune", "Nagpur"],
+        postalPrefix: "40",
+      },
+      {
+        key: "delhi",
+        name: "Delhi",
+        cities: ["New Delhi", "Dwarka", "Rohini"],
+        postalPrefix: "11",
+      },
+      {
+        key: "tamil-nadu",
+        name: "Tamil Nadu",
+        cities: ["Chennai", "Coimbatore", "Madurai"],
+        postalPrefix: "60",
+      },
+    ],
+    mobile: (rand) => {
+      const prefix = pick(rand, ["9", "8", "7"]);
+      return `+91 ${prefix}${randomInt(rand, 100000000, 999999999)}`;
+    },
+    landline: (rand) => `0${randomInt(rand, 1111, 8899)}-${randomInt(rand, 100000, 999999)}`,
+    postalCode: (rand, state) => `${state.postalPrefix}${randomInt(rand, 0, 9999).toString().padStart(4, "0")}`,
+  },
+  "united-kingdom": {
+    key: "united-kingdom",
+    label: "United Kingdom",
+    currency: "GBP",
+    streetNames: [
+      "Baker St",
+      "King's Rd",
+      "Oxford St",
+      "Piccadilly",
+      "Fleet St",
+      "Portobello Rd",
+      "George St",
+      "High St",
+      "Queen's Rd",
+      "Station Rd",
+    ],
+    states: [
+      {
+        key: "england",
+        name: "England",
+        cities: ["London", "Manchester", "Bristol"],
+        postalPrefix: "SW1",
+      },
+      {
+        key: "scotland",
+        name: "Scotland",
+        cities: ["Edinburgh", "Glasgow", "Aberdeen"],
+        postalPrefix: "EH3",
+      },
+      {
+        key: "wales",
+        name: "Wales",
+        cities: ["Cardiff", "Swansea", "Newport"],
+        postalPrefix: "CF1",
+      },
+      {
+        key: "northern-ireland",
+        name: "Northern Ireland",
+        cities: ["Belfast", "Derry", "Lisburn"],
+        postalPrefix: "BT1",
+      },
+    ],
+    mobile: (rand) => `+44 7${randomInt(rand, 100000000, 999999999)}`,
+    landline: (rand) => `0${randomInt(rand, 113, 204)} ${randomInt(rand, 1000, 9999)} ${randomInt(rand, 1000, 9999)}`,
+    postalCode: (rand, state) =>
+      `${state.postalPrefix}${randomInt(rand, 1, 9)} ${randomInt(rand, 0, 9)}${pick(rand, letters)}${pick(rand, letters)}`,
+  },
+  "united-states": {
+    key: "united-states",
+    label: "United States",
+    currency: "USD",
+    streetNames: [
+      "Main St",
+      "Broadway",
+      "Elm St",
+      "Maple Ave",
+      "Pine St",
+      "Cedar Ave",
+      "Market St",
+      "2nd Ave",
+      "Park Ave",
+      "Sunset Blvd",
+    ],
+    states: [
+      {
+        key: "california",
+        name: "California",
+        cities: ["San Francisco", "Los Angeles", "San Diego"],
+        postalPrefix: "90",
+        areaCodes: ["415", "310", "619"],
+      },
+      {
+        key: "new-york",
+        name: "New York",
+        cities: ["New York", "Buffalo", "Rochester"],
+        postalPrefix: "10",
+        areaCodes: ["212", "347", "718"],
+      },
+      {
+        key: "texas",
+        name: "Texas",
+        cities: ["Houston", "Austin", "Dallas"],
+        postalPrefix: "75",
+        areaCodes: ["713", "512", "214"],
+      },
+      {
+        key: "washington",
+        name: "Washington",
+        cities: ["Seattle", "Spokane", "Tacoma"],
+        postalPrefix: "98",
+        areaCodes: ["206", "509", "253"],
+      },
+    ],
+    mobile: (rand, state) => {
+      const area = pick(rand, state.areaCodes ?? ["206", "310", "415", "512", "718"]);
+      return `+1-${area}-${randomInt(rand, 200, 999)}-${randomInt(rand, 1000, 9999)}`;
+    },
+    landline: (rand, state) => {
+      const area = pick(rand, state.areaCodes ?? ["206", "310", "415", "512", "718"]);
+      return `${area}-${randomInt(rand, 200, 999)}-${randomInt(rand, 1000, 9999)}`;
+    },
+    postalCode: (rand, state) => `${state.postalPrefix}${randomInt(rand, 0, 999).toString().padStart(3, "0")}`,
+  },
+};
+
+const countryAliases: Record<string, string> = {
+  au: "australia",
+  aus: "australia",
+  australia: "australia",
+  in: "india",
+  ind: "india",
+  india: "india",
+  uk: "united-kingdom",
+  "united-kingdom": "united-kingdom",
+  gb: "united-kingdom",
+  "great-britain": "united-kingdom",
+  "united-states": "united-states",
+  usa: "united-states",
+  us: "united-states",
+  "united-state": "united-states",
+};
+
+const resolveTerritory = (countryParam: string | null): Territory => {
+  const normalized = normalizeKey(countryParam) || "australia";
+  const key = countryAliases[normalized] ?? normalized;
+  return territories[key] ?? territories["australia"];
+};
+
+const resolveState = (
+  territory: Territory,
+  stateParam: string | null,
+  rand: Random,
+): TerritoryState => {
+  const normalized = normalizeKey(stateParam);
+  const match = territory.states.find((state) => state.key === normalized);
+  if (match) return match;
+  return pick(rand, territory.states);
+};
+
 type Customer = {
   id: string;
   firstName: string;
@@ -97,7 +355,12 @@ type Customer = {
   fullName: string;
   email: string;
   phone: string;
+  mobile: string;
   address: string;
+  city: string;
+  state: string;
+  country: string;
+  postalCode: string;
 };
 
 type Account = {
@@ -146,9 +409,13 @@ const buildIdGenerator = (prefix: string) => {
 const generateCustomers = ({
   rand,
   count,
+  territory,
+  state,
 }: {
   rand: Random;
   count: number;
+  territory: Territory;
+  state: TerritoryState;
 }): Customer[] => {
   const nextId = buildIdGenerator("CUST");
   return Array.from({ length: count }, () => {
@@ -158,8 +425,12 @@ const generateCustomers = ({
     const email = `${firstName}.${lastName}${randomInt(rand, 10, 999)}@example.com`
       .toLowerCase()
       .replace(" ", "");
-    const phone = `04${randomInt(rand, 10000000, 99999999)}`;
-    const address = `${randomInt(rand, 1, 999)} ${pick(rand, streets)}, ${["Sydney", "Melbourne", "Brisbane", "Perth", "Adelaide"][randomInt(rand, 0, 4)]} NSW`;
+    const city = pick(rand, state.cities);
+    const street = pick(rand, territory.streetNames);
+    const postalCode = territory.postalCode(rand, state);
+    const mobile = territory.mobile(rand, state);
+    const phone = (territory.landline ?? territory.mobile)(rand, state);
+    const address = `${randomInt(rand, 1, 999)} ${street}, ${city}, ${state.name} ${postalCode}, ${territory.label}`;
 
     return {
       id: nextId(),
@@ -168,7 +439,12 @@ const generateCustomers = ({
       fullName,
       email,
       phone,
+      mobile,
       address,
+      city,
+      state: state.name,
+      country: territory.label,
+      postalCode,
     };
   });
 };
@@ -257,10 +533,30 @@ const generateTransactions = ({
   });
 };
 
-const buildConfig = (url: URL) => {
+type BuildConfig = {
+  rand: Random;
+  seed: number;
+  customerCount: number;
+  minAccounts: number;
+  maxAccounts: number;
+  minTransactions: number;
+  maxTransactions: number;
+  currency: string;
+  minAmount: number;
+  maxAmount: number;
+  startDate: Date;
+  endDate: Date;
+  territory: Territory;
+  state: TerritoryState;
+};
+
+const buildConfig = (url: URL): BuildConfig => {
   const search = url.searchParams;
   const seed = parseIntParam(search.get("seed"), Date.now());
   const rand = mulberry32(seed);
+
+  const territory = resolveTerritory(search.get("country"));
+  const state = resolveState(territory, search.get("state"), rand);
 
   const customerCount = parseIntParam(search.get("customers"), 10);
   const minAccounts = parseIntParam(search.get("minAccounts"), 1);
@@ -275,7 +571,7 @@ const buildConfig = (url: URL) => {
     parseIntParam(search.get("maxTransactions"), 8),
   );
 
-  const currency = search.get("currency") ?? "AUD";
+  const currency = search.get("currency") ?? territory.currency;
   const minAmount = parseFloatParam(search.get("minAmount"), 10);
   const maxAmount = Math.max(minAmount, parseFloatParam(search.get("maxAmount"), 500));
 
@@ -297,6 +593,8 @@ const buildConfig = (url: URL) => {
     maxAmount,
     startDate,
     endDate,
+    territory,
+    state,
   };
 };
 
@@ -334,12 +632,17 @@ const server = Bun.serve({
       const customers = generateCustomers({
         rand: config.rand,
         count: config.customerCount,
+        territory: config.territory,
+        state: config.state,
       });
 
       return jsonResponse({
         meta: {
           seed: config.seed,
           customers: config.customerCount,
+          country: config.territory.label,
+          state: config.state.name,
+          currency: config.currency,
         },
         data: customers,
       });
@@ -350,6 +653,8 @@ const server = Bun.serve({
       const customers = generateCustomers({
         rand: config.rand,
         count: config.customerCount,
+        territory: config.territory,
+        state: config.state,
       });
       const accounts = generateAccounts({
         rand: config.rand,
@@ -365,6 +670,9 @@ const server = Bun.serve({
           customers: customers.length,
           accounts: accounts.length,
           perCustomer: { min: config.minAccounts, max: config.maxAccounts },
+          country: config.territory.label,
+          state: config.state.name,
+          currency: config.currency,
         },
         data: { customers, accounts },
       });
@@ -375,6 +683,8 @@ const server = Bun.serve({
       const customers = generateCustomers({
         rand: config.rand,
         count: config.customerCount,
+        territory: config.territory,
+        state: config.state,
       });
       const accounts = generateAccounts({
         rand: config.rand,
@@ -407,12 +717,14 @@ const server = Bun.serve({
             start: config.startDate.toISOString(),
             end: config.endDate.toISOString(),
           },
+          country: config.territory.label,
+          state: config.state.name,
+          currency: config.currency,
         },
         data: { customers, accounts, transactions },
       });
     }
 
-    // Static assets
     const staticResp = await serveStatic(path);
     if (staticResp) return staticResp;
 

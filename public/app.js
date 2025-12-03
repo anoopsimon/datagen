@@ -1,5 +1,8 @@
-const form = document.getElementById("config-form");
+﻿const form = document.getElementById("config-form");
 const statusEl = document.getElementById("status");
+const countrySelect = document.getElementById("country");
+const stateSelect = document.getElementById("state");
+const currencyInput = form.querySelector("input[name=\"currency\"]");
 const tabs = [...document.querySelectorAll(".tab")];
 const viewers = {
   customers: document.getElementById("customers"),
@@ -16,6 +19,45 @@ const endpointForTab = {
   customers: "/customers",
   accounts: "/accounts",
   transactions: "/transactions",
+};
+
+const territoryOptions = {
+  australia: {
+    currency: "AUD",
+    states: [
+      { key: "nsw", label: "New South Wales" },
+      { key: "vic", label: "Victoria" },
+      { key: "qld", label: "Queensland" },
+      { key: "wa", label: "Western Australia" },
+    ],
+  },
+  india: {
+    currency: "INR",
+    states: [
+      { key: "karnataka", label: "Karnataka" },
+      { key: "maharashtra", label: "Maharashtra" },
+      { key: "delhi", label: "Delhi" },
+      { key: "tamil-nadu", label: "Tamil Nadu" },
+    ],
+  },
+  "united-kingdom": {
+    currency: "GBP",
+    states: [
+      { key: "england", label: "England" },
+      { key: "scotland", label: "Scotland" },
+      { key: "wales", label: "Wales" },
+      { key: "northern-ireland", label: "Northern Ireland" },
+    ],
+  },
+  "united-states": {
+    currency: "USD",
+    states: [
+      { key: "california", label: "California" },
+      { key: "new-york", label: "New York" },
+      { key: "texas", label: "Texas" },
+      { key: "washington", label: "Washington" },
+    ],
+  },
 };
 
 const setStatus = (msg) => {
@@ -55,6 +97,28 @@ const closeModal = () => {
   modal.setAttribute("aria-hidden", "true");
 };
 
+const populateStates = (countryKey, preserveSelection = false) => {
+  const territory = territoryOptions[countryKey];
+  if (!territory) return;
+  const previous = stateSelect.value;
+  stateSelect.innerHTML = "";
+  territory.states.forEach((state, idx) => {
+    const option = document.createElement("option");
+    option.value = state.key;
+    option.textContent = state.label;
+    if ((preserveSelection && previous === state.key) || (!preserveSelection && idx === 0)) {
+      option.selected = true;
+    }
+    stateSelect.appendChild(option);
+  });
+};
+
+const syncCurrency = (countryKey) => {
+  const territory = territoryOptions[countryKey];
+  if (!territory) return;
+  currencyInput.value = territory.currency;
+};
+
 const fetchData = async (target) => {
   const qs = serializeForm();
   const url = `${endpointForTab[target]}${qs ? "?" + qs : ""}`;
@@ -81,6 +145,12 @@ form.addEventListener("submit", (e) => {
   fetchData(active);
 });
 
+countrySelect.addEventListener("change", () => {
+  const selectedCountry = countrySelect.value;
+  populateStates(selectedCountry);
+  syncCurrency(selectedCountry);
+});
+
 showCurlBtn.addEventListener("click", openModal);
 closeModalBtn.addEventListener("click", closeModal);
 modal.addEventListener("click", (e) => {
@@ -98,6 +168,9 @@ tabs.forEach((tab) => {
     fetchData(tab.dataset.target);
   });
 });
+
+populateStates(countrySelect.value);
+syncCurrency(countrySelect.value);
 
 // Initial fetch
 fetchData("customers");
