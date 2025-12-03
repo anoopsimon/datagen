@@ -29,19 +29,15 @@ const territoryOptions = {
       { key: "vic", label: "Victoria" },
       { key: "qld", label: "Queensland" },
       { key: "wa", label: "Western Australia" },
-<<<<<<< HEAD
       { key: "sa", label: "South Australia" },
       { key: "tas", label: "Tasmania" },
       { key: "nt", label: "Northern Territory" },
       { key: "act", label: "Australian Capital Territory" },
-=======
->>>>>>> 84a430f4e92530e1d0ddc9ad80c1df9622aeddd1
     ],
   },
   india: {
     currency: "INR",
     states: [
-<<<<<<< HEAD
       { key: "andhra-pradesh", label: "Andhra Pradesh" },
       { key: "arunachal-pradesh", label: "Arunachal Pradesh" },
       { key: "assam", label: "Assam" },
@@ -78,12 +74,6 @@ const territoryOptions = {
       { key: "ladakh", label: "Ladakh" },
       { key: "lakshadweep", label: "Lakshadweep" },
       { key: "puducherry", label: "Puducherry" },
-=======
-      { key: "karnataka", label: "Karnataka" },
-      { key: "maharashtra", label: "Maharashtra" },
-      { key: "delhi", label: "Delhi" },
-      { key: "tamil-nadu", label: "Tamil Nadu" },
->>>>>>> 84a430f4e92530e1d0ddc9ad80c1df9622aeddd1
     ],
   },
   "united-kingdom": {
@@ -98,7 +88,6 @@ const territoryOptions = {
   "united-states": {
     currency: "USD",
     states: [
-<<<<<<< HEAD
       { key: "alabama", label: "Alabama" },
       { key: "alaska", label: "Alaska" },
       { key: "arizona", label: "Arizona" },
@@ -150,12 +139,6 @@ const territoryOptions = {
       { key: "wisconsin", label: "Wisconsin" },
       { key: "wyoming", label: "Wyoming" },
       { key: "district-of-columbia", label: "District of Columbia" },
-=======
-      { key: "california", label: "California" },
-      { key: "new-york", label: "New York" },
-      { key: "texas", label: "Texas" },
-      { key: "washington", label: "Washington" },
->>>>>>> 84a430f4e92530e1d0ddc9ad80c1df9622aeddd1
     ],
   },
 };
