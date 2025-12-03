@@ -3,6 +3,7 @@ const statusEl = document.getElementById("status");
 const countrySelect = document.getElementById("country");
 const stateSelect = document.getElementById("state");
 const currencyInput = form.querySelector("input[name=\"currency\"]");
+const formatSelect = form.querySelector("select[name=\"format\"]");
 const tabs = [...document.querySelectorAll(".tab")];
 const viewers = {
   customers: document.getElementById("customers"),
@@ -205,14 +206,25 @@ const syncCurrency = (countryKey) => {
 const fetchData = async (target) => {
   const qs = serializeForm();
   const url = `${endpointForTab[target]}${qs ? "?" + qs : ""}`;
+  const format = formatSelect?.value ?? "json";
+  const headers = {};
+  if (format === "yaml") headers["Accept"] = "application/x-yaml";
+  else if (format === "xml") headers["Accept"] = "application/xml";
+  else headers["Accept"] = "application/json";
+
   lastCurl = buildCurl(target, qs);
   setStatus(`Fetching ${url} ...`);
   tabs.forEach((b) => b.disabled = true);
   try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`Request failed: ${res.status}`);
-    const json = await res.json();
-    viewers[target].textContent = JSON.stringify(json, null, 2);
+    const res = await fetch(url, { headers });
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(text || `Request failed: ${res.status}`);
+    }
+    const contentType = res.headers.get("content-type") || "";
+    const isJson = contentType.includes("json");
+    const body = isJson ? await res.json() : await res.text();
+    viewers[target].textContent = isJson ? JSON.stringify(body, null, 2) : body;
     setStatus("Done");
   } catch (err) {
     viewers[target].textContent = `Error: ${err.message}`;

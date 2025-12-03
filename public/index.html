@@ -39,6 +39,13 @@
             <label>Email domains (comma-separated)
               <input name="emailDomains" type="text" placeholder="example.com, test.io" value="example.com" />
             </label>
+            <label>Response format
+              <select name="format">
+                <option value="json" selected>JSON</option>
+                <option value="yaml">YAML</option>
+                <option value="xml">XML</option>
+              </select>
+            </label>
             <label>Seed <input name="seed" type="number" placeholder="optional" /></label>
             <label>Customers <input name="customers" type="number" min="1" value="10" /></label>
             <label>Min Accounts <input name="minAccounts" type="number" min="1" value="1" /></label>

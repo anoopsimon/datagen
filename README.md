@@ -31,6 +31,7 @@ All endpoints accept the same query params:
 | `country` | `australia` | One of `australia`, `india`, `united-kingdom`/`uk`, `united-states`/`usa` |
 | `state` | random for selected country | Match a state key for the chosen country (e.g. `vic`, `karnataka`, `england`, `california`) |
 | `emailDomains` | `example.com` | Comma-separated domains for emails; invalid domains are ignored; one is picked per customer |
+| `format` | `json` | Response format: `json`, `yaml`, or `xml` (or send `Accept: application/xml` / `application/x-yaml`) |
 | `seed` | current timestamp | Set for deterministic runs |
 | `customers` | `10` | Number of customers |
 | `minAccounts` | `1` | Min accounts per customer |

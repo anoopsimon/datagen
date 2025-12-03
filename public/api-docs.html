@@ -70,7 +70,7 @@
         <h1 style="margin: 6px 0 0;">API Docs</h1>
         <p class="lede" style="margin: 4px 0 0;">REST endpoints for synthetic banking data.</p>
       </div>
-      <a class="pill-link" href="/">← Back to app</a>
+      <a class="pill-link" href="/">Back to app</a>
     </header>
 
     <main>
@@ -116,6 +116,7 @@
             <tr><td><code>country</code></td><td><code>australia</code></td><td>One of <code>australia</code>, <code>india</code>, <code>united-kingdom</code>/<code>uk</code>, <code>united-states</code>/<code>usa</code>.</td></tr>
             <tr><td><code>state</code></td><td>random</td><td>State/region key for chosen country (e.g. <code>vic</code>, <code>karnataka</code>, <code>england</code>, <code>california</code>).</td></tr>
             <tr><td><code>emailDomains</code></td><td><code>example.com</code></td><td>Comma-separated domains; invalid entries ignored; one picked per customer.</td></tr>
+            <tr><td><code>format</code></td><td><code>json</code></td><td>Response format: <code>json</code>, <code>yaml</code>, or <code>xml</code>. You can also set <code>Accept: application/x-yaml</code> or <code>application/xml</code>.</td></tr>
             <tr><td><code>seed</code></td><td>current timestamp</td><td>Deterministic generation when provided.</td></tr>
             <tr><td><code>customers</code></td><td><code>10</code></td><td>Number of customers.</td></tr>
             <tr><td><code>minAccounts</code></td><td><code>1</code></td><td>Minimum accounts per customer.</td></tr>
@@ -133,7 +134,7 @@
 
       <section class="doc-section">
         <h3>Responses</h3>
-        <p class="lede">All endpoints return <code>application/json</code> with a <code>meta</code> block describing generation config.</p>
+        <p class="lede">All endpoints return a <code>meta</code> block describing generation config plus <code>data</code>. Formats supported: JSON (default), YAML, XML.</p>
       </section>
     </main>
   </body>

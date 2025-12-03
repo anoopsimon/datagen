@@ -408,6 +408,113 @@ const parseEmailDomains = (value: string | null): string[] => {
   return domains.length ? Array.from(new Set(domains)) : defaultDomain;
 };
 
+type ResponseFormat = "json" | "yaml" | "xml";
+
+const parseFormat = (req: Request, url: URL): ResponseFormat => {
+  const queryFormat = normalizeKey(url.searchParams.get("format"));
+  if (queryFormat === "yaml" || queryFormat === "yml") return "yaml";
+  if (queryFormat === "xml") return "xml";
+
+  const accept = (req.headers.get("accept") ?? "").toLowerCase();
+  if (accept.includes("yaml") || accept.includes("yml")) return "yaml";
+  if (accept.includes("xml")) return "xml";
+  return "json";
+};
+
+const escapeXml = (value: string): string =>
+  value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+
+const toXml = (value: unknown, tag = "response"): string => {
+  if (value === null || value === undefined) {
+    return `<${tag}></${tag}>`;
+  }
+  if (Array.isArray(value)) {
+    const children = value.map((v) => toXml(v, "item")).join("");
+    return `<${tag}>${children}</${tag}>`;
+  }
+  if (typeof value === "object") {
+    const parts = Object.entries(value as Record<string, unknown>).map(([k, v]) => toXml(v, k));
+    return `<${tag}>${parts.join("")}</${tag}>`;
+  }
+  return `<${tag}>${escapeXml(String(value))}</${tag}>`;
+};
+
+const toYaml = (value: unknown, indent = 0): string => {
+  const pad = "  ".repeat(indent);
+  if (value === null || value === undefined) return "null";
+  if (typeof value === "string") return JSON.stringify(value);
+  if (typeof value === "number" || typeof value === "boolean") return String(value);
+
+  if (Array.isArray(value)) {
+    if (value.length === 0) return "[]";
+    return value
+      .map((item) => {
+        const rendered = toYaml(item, indent + 1);
+        if (rendered.includes("\n")) {
+          const indented = rendered
+            .split("\n")
+            .map((line) => (line ? "  " + line : line))
+            .join("\n");
+          return `${pad}-\n${indented}`;
+        }
+        return `${pad}- ${rendered}`;
+      })
+      .join("\n");
+  }
+
+  const entries = Object.entries(value as Record<string, unknown>);
+  if (entries.length === 0) return "{}";
+  return entries
+    .map(([k, v]) => {
+      const rendered = toYaml(v, indent + 1);
+      const keyLine = `${pad}${k}:`;
+      if (rendered.includes("\n")) {
+        const indented = rendered
+          .split("\n")
+          .map((line) => (line ? "  " + line : line))
+          .join("\n");
+        return `${keyLine}\n${indented}`;
+      }
+      return `${keyLine} ${rendered}`;
+    })
+    .join("\n");
+};
+
+const formatResponse = (data: unknown, format: ResponseFormat, init?: ResponseInit) => {
+  if (format === "yaml") {
+    return new Response(toYaml(data), {
+      headers: {
+        "Content-Type": "application/x-yaml",
+        "Access-Control-Allow-Origin": "*",
+      },
+      ...init,
+    });
+  }
+  if (format === "xml") {
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>` + toXml(data);
+    return new Response(xml, {
+      headers: {
+        "Content-Type": "application/xml",
+        "Access-Control-Allow-Origin": "*",
+      },
+      ...init,
+    });
+  }
+
+  return new Response(JSON.stringify(data, null, 2), {
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    },
+    ...init,
+  });
+};
+
 const buildIdGenerator = (prefix: string) => {
   let counter = 1;
   return () => `${prefix}-${String(counter++).padStart(4, "0")}`;
@@ -611,15 +718,6 @@ const buildConfig = (url: URL): BuildConfig => {
   };
 };
 
-const jsonResponse = (data: unknown, init?: ResponseInit) =>
-  new Response(JSON.stringify(data, null, 2), {
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-    },
-    ...init,
-  });
-
 const serveStatic = async (path: string) => {
   try {
     const file = Bun.file(`public${path === "/" ? "/index.html" : path}`);
@@ -635,9 +733,10 @@ const server = Bun.serve({
   async fetch(req) {
     const url = new URL(req.url);
     const path = url.pathname;
+    const format = parseFormat(req, url);
 
     if (path === "/health") {
-      return jsonResponse({ status: "ok" });
+      return formatResponse({ status: "ok" }, format);
     }
 
     if (path === "/customers") {
@@ -650,7 +749,7 @@ const server = Bun.serve({
         emailDomains: config.emailDomains,
       });
 
-      return jsonResponse({
+      return formatResponse({
         meta: {
           seed: config.seed,
           customers: config.customerCount,
@@ -660,7 +759,7 @@ const server = Bun.serve({
           emailDomains: config.emailDomains,
         },
         data: customers,
-      });
+      }, format);
     }
 
     if (path === "/accounts") {
@@ -680,7 +779,7 @@ const server = Bun.serve({
         currency: config.currency,
       });
 
-      return jsonResponse({
+      return formatResponse({
         meta: {
           seed: config.seed,
           customers: customers.length,
@@ -692,7 +791,7 @@ const server = Bun.serve({
           emailDomains: config.emailDomains,
         },
         data: { customers, accounts },
-      });
+      }, format);
     }
 
     if (path === "/transactions") {
@@ -723,7 +822,7 @@ const server = Bun.serve({
         maxAmount: config.maxAmount,
       });
 
-      return jsonResponse({
+      return formatResponse({
         meta: {
           seed: config.seed,
           customers: customers.length,
@@ -741,13 +840,13 @@ const server = Bun.serve({
           emailDomains: config.emailDomains,
         },
         data: { customers, accounts, transactions },
-      });
+      }, format);
     }
 
     const staticResp = await serveStatic(path);
     if (staticResp) return staticResp;
 
-    return jsonResponse({ error: "Not found" }, { status: 404 });
+    return formatResponse({ error: "Not found" }, format, { status: 404 });
   },
 });
 
