@@ -1,6 +1,13 @@
-# Synthetic Banking Data API (Bun)
+﻿# Synthetic Banking Data API (Bun)
+
+**Simple tool built on the Bun runtime to see how cool Bun really is.**
+Learn more about Bun here: https://bun.com/docs
 
 Lightweight HTTP API that produces synthetic banking data (customers, accounts, transactions) for testing dashboards or integrations.
+
+## UI preview
+
+![App UI](doc/img/app.png)
 
 ## Run the API
 
@@ -12,10 +19,10 @@ PORT=4000 bun run index.ts
 
 ## Endpoints
 
-- `GET /health` – readiness check.
-- `GET /customers` – list of generated customers.
-- `GET /accounts` – customers plus their generated accounts.
-- `GET /transactions` – customers, accounts, and transactions.
+- `GET /health` readiness check.
+- `GET /customers` list of generated customers.
+- `GET /accounts` customers plus their generated accounts.
+- `GET /transactions` customers, accounts, and transactions.
 
 All endpoints accept the same query params:
 
