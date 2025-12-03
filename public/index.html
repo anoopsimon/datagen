@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Synthetic Banking Data</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <div class="pill">Bun</div>
+        <h1>Banking Data Lab</h1>
+      </div>
+      <p class="lede">
+        Generate synthetic customers, accounts, and transactions for testing dashboards and flows.
+      </p>
+    </header>
+
+    <main>
+      <section class="panel">
+        <h2>Generation Settings</h2>
+        <form id="config-form">
+          <div class="grid">
+            <label>Seed <input name="seed" type="number" placeholder="optional" /></label>
+            <label>Customers <input name="customers" type="number" min="1" value="10" /></label>
+            <label>Min Accounts <input name="minAccounts" type="number" min="1" value="1" /></label>
+            <label>Max Accounts <input name="maxAccounts" type="number" min="1" value="3" /></label>
+            <label>Min Txns <input name="minTransactions" type="number" min="1" value="3" /></label>
+            <label>Max Txns <input name="maxTransactions" type="number" min="1" value="8" /></label>
+            <label>Min Amount <input name="minAmount" type="number" min="0" step="1" value="10" /></label>
+            <label>Max Amount <input name="maxAmount" type="number" min="0" step="1" value="500" /></label>
+            <label>Start Date <input name="startDate" type="date" /></label>
+            <label>End Date <input name="endDate" type="date" /></label>
+            <label>Currency <input name="currency" type="text" value="AUD" /></label>
+          </div>
+          <div class="actions">
+            <button type="submit">Generate</button>
+            <span id="status" aria-live="polite"></span>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div class="tabs" role="tablist">
+            <button class="tab active" data-target="customers" role="tab">Customers</button>
+            <button class="tab" data-target="accounts" role="tab">Accounts</button>
+            <button class="tab" data-target="transactions" role="tab">Transactions</button>
+          </div>
+          <button type="button" class="ghost" id="show-curl">Show curl</button>
+        </div>
+        <div id="content">
+          <div class="subhead">Response</div>
+          <pre id="customers" class="viewer active"></pre>
+          <pre id="accounts" class="viewer"></pre>
+          <pre id="transactions" class="viewer"></pre>
+        </div>
+      </section>
+    </main>
+
+    <div id="curl-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="curl-title" aria-hidden="true">
+      <div class="modal-backdrop"></div>
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h3 id="curl-title">Sample curl</h3>
+          <button type="button" class="ghost" id="close-modal">Close</button>
+        </div>
+        <pre id="curl-snippet" class="snippet"></pre>
+      </div>
+    </div>
+
+    <footer>
+      <small>Endpoints: <code>/customers</code>, <code>/accounts</code>, <code>/transactions</code></small>
+    </footer>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

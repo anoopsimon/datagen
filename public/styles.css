@@ -1,0 +1,271 @@
+:root {
+  color-scheme: light;
+  --bg: #0b1021;
+  --panel: #0f162d;
+  --accent: #6cf1c6;
+  --text: #e9eefb;
+  --muted: #b8c0d9;
+  --border: #1f2744;
+  --shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(circle at 20% 20%, #11204b, #0b1021 40%),
+    radial-gradient(circle at 80% 0%, #0e243f, #0b1021 45%),
+    #0b1021;
+  color: var(--text);
+  padding: 32px 20px 48px;
+}
+
+header {
+  max-width: 1100px;
+  margin: 0 auto 20px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+}
+
+.pill {
+  background: rgba(108, 241, 198, 0.15);
+  color: var(--accent);
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(108, 241, 198, 0.3);
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.lede {
+  margin: 6px 0 0;
+  color: var(--muted);
+  max-width: 720px;
+}
+
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 18px 16px;
+  box-shadow: var(--shadow);
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.panel h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+input {
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #0c1328;
+  color: var(--text);
+}
+
+input:focus {
+  outline: 2px solid rgba(108, 241, 198, 0.35);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+button {
+  background: linear-gradient(135deg, #6cf1c6, #3fe0e6);
+  color: #0b1021;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 30px rgba(108, 241, 198, 0.25);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+button.tab {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  box-shadow: none;
+}
+
+button.tab.active {
+  color: var(--text);
+  border-color: rgba(108, 241, 198, 0.45);
+  background: rgba(108, 241, 198, 0.08);
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.subhead {
+  color: var(--muted);
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  margin-bottom: 8px;
+}
+
+.viewer {
+  display: none;
+  background: #0a0f23;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  color: #d8e5ff;
+  max-height: 500px;
+  overflow: auto;
+  font-size: 13px;
+}
+
+.viewer.active {
+  display: block;
+}
+
+.snippet {
+  background: #0a0f23;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  color: #d8e5ff;
+  font-size: 13px;
+  overflow: auto;
+  min-height: 80px;
+}
+
+.ghost {
+  background: rgba(108, 241, 198, 0.15);
+  border: 1px solid rgba(108, 241, 198, 0.3);
+  color: var(--accent);
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#status {
+  color: var(--muted);
+  min-height: 20px;
+  font-size: 13px;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+
+.modal.open {
+  display: flex;
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 8, 18, 0.75);
+  backdrop-filter: blur(2px);
+}
+
+.modal-dialog {
+  position: relative;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  width: min(680px, calc(100% - 32px));
+  box-shadow: var(--shadow);
+  z-index: 1;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+footer {
+  max-width: 1100px;
+  margin: 12px auto 0;
+  color: var(--muted);
+}
+
+@media (max-width: 640px) {
+  body {
+    padding: 20px 12px 32px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
