@@ -1,4 +1,4 @@
-:root {
+﻿:root {
   color-scheme: light;
   --bg: #0b1021;
   --panel: #0f162d;
@@ -109,7 +109,8 @@ label {
   font-size: 14px;
 }
 
-input {
+input,
+select {
   padding: 10px;
   border-radius: 10px;
   border: 1px solid var(--border);
@@ -117,7 +118,8 @@ input {
   color: var(--text);
 }
 
-input:focus {
+input:focus,
+select:focus {
   outline: 2px solid rgba(108, 241, 198, 0.35);
 }
 

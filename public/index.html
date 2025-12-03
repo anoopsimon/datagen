@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -22,6 +22,20 @@
         <h2>Generation Settings</h2>
         <form id="config-form">
           <div class="grid">
+            <label>Country
+              <select name="country" id="country">
+                <option value="australia" selected>Australia</option>
+                <option value="india">India</option>
+                <option value="united-kingdom">United Kingdom</option>
+                <option value="united-states">United States</option>
+              </select>
+            </label>
+            <label>State / Region
+              <select name="state" id="state"></select>
+            </label>
+            <label>Email domains (comma-separated)
+              <input name="emailDomains" type="text" placeholder="example.com, test.io" value="example.com" />
+            </label>
             <label>Seed <input name="seed" type="number" placeholder="optional" /></label>
             <label>Customers <input name="customers" type="number" min="1" value="10" /></label>
             <label>Min Accounts <input name="minAccounts" type="number" min="1" value="1" /></label>
