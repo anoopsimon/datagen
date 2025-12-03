@@ -14,6 +14,7 @@ const curlSnippet = document.getElementById("curl-snippet");
 const showCurlBtn = document.getElementById("show-curl");
 const modal = document.getElementById("curl-modal");
 const closeModalBtn = document.getElementById("close-modal");
+const copyBtn = document.getElementById("copy-response");
 let lastCurl = "";
 
 const endpointForTab = {
@@ -262,6 +263,21 @@ tabs.forEach((tab) => {
     activateTab(tab.dataset.target);
     fetchData(tab.dataset.target);
   });
+});
+
+copyBtn?.addEventListener("click", async () => {
+  const activeKey = document.querySelector(".tab.active")?.dataset.target ?? "customers";
+  const content = viewers[activeKey]?.textContent ?? "";
+  if (!content.trim()) {
+    setStatus("Nothing to copy yet.");
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(content);
+    setStatus("Response copied to clipboard.");
+  } catch (err) {
+    setStatus("Copy failed; clipboard not available.");
+  }
 });
 
 populateStates(countrySelect.value);
