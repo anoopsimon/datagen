@@ -1,12 +1,13 @@
 ﻿:root {
   color-scheme: light;
-  --bg: #0b1021;
-  --panel: #0f162d;
-  --accent: #6cf1c6;
-  --text: #e9eefb;
+  --bg: #0f1115;
+  --panel: #141821;
+  --accent: #ff9900;
+  --accent-soft: rgba(255, 153, 0, 0.15);
+  --text: #eef1f5;
   --muted: #b8c0d9;
-  --border: #1f2744;
-  --shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  --border: #202634;
+  --shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
   font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
 }
 
@@ -19,9 +20,9 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: radial-gradient(circle at 20% 20%, #11204b, #0b1021 40%),
-    radial-gradient(circle at 80% 0%, #0e243f, #0b1021 45%),
-    #0b1021;
+  background: radial-gradient(circle at 18% 18%, #1a2130, #0f1115 38%),
+    radial-gradient(circle at 80% 0%, #1b2535, #0f1115 45%),
+    #0f1115;
   color: var(--text);
   padding: 32px 20px 48px;
 }
@@ -45,25 +46,32 @@ header {
 
 .header-links {
   margin-top: 6px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .header-links a {
   color: var(--accent);
   text-decoration: none;
-  font-weight: 600;
-  font-size: 14px;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 153, 0, 0.35);
+  background: var(--accent-soft);
 }
 
 .header-links a:hover {
-  text-decoration: underline;
+  border-color: rgba(255, 153, 0, 0.6);
 }
 
 .pill {
-  background: rgba(108, 241, 198, 0.15);
+  background: var(--accent-soft);
   color: var(--accent);
   padding: 6px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(108, 241, 198, 0.3);
+  border: 1px solid rgba(255, 153, 0, 0.35);
   font-weight: 600;
   font-size: 12px;
 }
@@ -135,7 +143,7 @@ textarea {
   padding: 10px;
   border-radius: 10px;
   border: 1px solid var(--border);
-  background: #0c1328;
+  background: #0f141f;
   color: var(--text);
   font-family: inherit;
 }
@@ -143,7 +151,7 @@ textarea {
 input:focus,
 select:focus,
 textarea:focus {
-  outline: 2px solid rgba(108, 241, 198, 0.35);
+  outline: 2px solid rgba(255, 153, 0, 0.35);
 }
 
 textarea {
@@ -158,14 +166,14 @@ textarea {
 }
 
 button {
-  background: linear-gradient(135deg, #6cf1c6, #3fe0e6);
-  color: #0b1021;
+  background: linear-gradient(135deg, #ffb347, #ff9900);
+  color: #0f1115;
   border: none;
   border-radius: 12px;
   padding: 10px 16px;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 8px 30px rgba(108, 241, 198, 0.25);
+  box-shadow: 0 8px 30px rgba(255, 153, 0, 0.2);
 }
 
 button:active {
@@ -182,8 +190,8 @@ button.tab {
 
 button.tab.active {
   color: var(--text);
-  border-color: rgba(108, 241, 198, 0.45);
-  background: rgba(108, 241, 198, 0.08);
+  border-color: rgba(255, 153, 0, 0.6);
+  background: var(--accent-soft);
 }
 
 .tabs {
@@ -228,8 +236,8 @@ button.tab.active {
 }
 
 .ghost {
-  background: rgba(108, 241, 198, 0.15);
-  border: 1px solid rgba(108, 241, 198, 0.3);
+  background: var(--accent-soft);
+  border: 1px solid rgba(255, 153, 0, 0.35);
   color: var(--accent);
   padding: 8px 12px;
   border-radius: 10px;
