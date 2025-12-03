@@ -13,10 +13,30 @@ Lightweight HTTP API that produces synthetic data (customers, accounts, transact
 
 ## Run the API
 
+From source (Bun):
 ```bash
 bun run index.ts
-# or specify a port
+# specify a port
 PORT=4000 bun run index.ts
+```
+
+Installed via npm (global):
+```bash
+npm i -g datagenstudio
+datagenstudio
+# specify a port (cross-platform)
+datagenstudio --port 4000
+# or shorthand
+datagenstudio -p 4000
+```
+
+Installed locally in a project:
+```bash
+npm i datagenstudio
+npx datagenstudio
+# or specify a port
+npx datagenstudio --port 4000
+npx datagenstudio -p 4000
 ```
 
 ## Endpoints
@@ -62,3 +82,14 @@ curl "http://localhost:3000/customers?seed=99&customers=3&country=india&state=ka
 ```
 
 Responses include a `meta` block describing the generation config and a `data` block with the generated objects.
+
+## Contributing & publishing
+
+1) Fork/branch and make your changes.
+2) Ensure Bun is installed; run `bun run index.ts` to verify the server boots.
+3) Keep tests/manual checks lean (no current test suite).
+4) For CLI packaging, ensure `bin/datagenstudio.js` remains in sync with `package.json` bin mapping.
+5) Update version and metadata in `package.json` as needed.
+6) Publish (requires registry access):
+   - npm: `npm publish --access public`
+   - bun: `bun publish`

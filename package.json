@@ -1,8 +1,33 @@
 {
-  "name": "test-dashboard",
-  "module": "index.ts",
+  "name": "datagenstudio",
+  "version": "1.0.4",
+  "description": "DataGen Studio: Bun-powered synthetic data API and Swagger-based payload generator.",
   "type": "module",
-  "private": true,
+  "module": "index.ts",
+  "bin": {
+    "datagenstudio": "bin/datagenstudio.js"
+  },
+  "scripts": {
+    "start": "bun run index.ts",
+    "datagenstudio": "bun run index.ts"
+  },
+  "engines": {
+    "bun": ">=1.0.0"
+  },
+  "keywords": [
+    "synthetic-data",
+    "bun",
+    "api",
+    "swagger",
+    "openapi",
+    "testing"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anoopsimon/datagen.git"
+  },
+  "author": "Anoop Simon",
   "devDependencies": {
     "@types/bun": "latest"
   },
