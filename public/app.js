@@ -4,6 +4,7 @@ const countrySelect = document.getElementById("country");
 const stateSelect = document.getElementById("state");
 const currencyInput = form.querySelector("input[name=\"currency\"]");
 const formatSelect = form.querySelector("select[name=\"format\"]");
+const themeToggle = document.getElementById("theme-toggle");
 const tabs = [...document.querySelectorAll(".tab")];
 const viewers = {
   customers: document.getElementById("customers"),
@@ -265,6 +266,24 @@ tabs.forEach((tab) => {
   });
 });
 
+const applyTheme = (theme) => {
+  document.documentElement.setAttribute("data-theme", theme);
+  localStorage.setItem("datagen-theme", theme);
+  if (themeToggle) themeToggle.textContent = theme === "light" ? "Switch to dark" : "Switch to light";
+};
+
+const initTheme = () => {
+  const stored = localStorage.getItem("datagen-theme");
+  const prefersLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
+  const theme = stored || (prefersLight ? "light" : "dark");
+  applyTheme(theme);
+};
+
+themeToggle?.addEventListener("click", () => {
+  const current = document.documentElement.getAttribute("data-theme") || "dark";
+  applyTheme(current === "light" ? "dark" : "light");
+});
+
 copyBtn?.addEventListener("click", async () => {
   const activeKey = document.querySelector(".tab.active")?.dataset.target ?? "customers";
   const content = viewers[activeKey]?.textContent ?? "";
@@ -282,6 +301,7 @@ copyBtn?.addEventListener("click", async () => {
 
 populateStates(countrySelect.value);
 syncCurrency(countrySelect.value);
+initTheme();
 
 // Initial fetch
 fetchData("customers");

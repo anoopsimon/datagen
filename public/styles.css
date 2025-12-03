@@ -11,6 +11,15 @@
   font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
 }
 
+:root[data-theme="light"] {
+  --bg: #f7f8fa;
+  --panel: #ffffff;
+  --text: #0f1115;
+  --muted: #4a5568;
+  --border: #e2e8f0;
+  --shadow: 0 8px 24px rgba(15, 17, 21, 0.08);
+}
+
 *,
 *::before,
 *::after {
@@ -25,6 +34,10 @@ body {
     #0f1115;
   color: var(--text);
   padding: 32px 20px 48px;
+}
+
+:root[data-theme="light"] body {
+  background: var(--bg);
 }
 
 header {
@@ -148,6 +161,12 @@ textarea {
   font-family: inherit;
 }
 
+:root[data-theme="light"] input,
+:root[data-theme="light"] select,
+:root[data-theme="light"] textarea {
+  background: #fefefe;
+}
+
 input:focus,
 select:focus,
 textarea:focus {
@@ -218,6 +237,12 @@ button.tab.active {
   max-height: 500px;
   overflow: auto;
   font-size: 13px;
+}
+
+:root[data-theme="light"] .viewer,
+:root[data-theme="light"] .snippet {
+  background: #fefefe;
+  color: #1a202c;
 }
 
 .viewer.active {
