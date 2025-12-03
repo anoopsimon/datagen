@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Schema DataGen</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <div class="pill">Bun</div>
+        <h1>Schema DataGen</h1>
+      </div>
+      <div class="header-links">
+        <a href="/">Back to App</a>
+      </div>
+      <p class="lede">
+        Load an OpenAPI/Swagger spec and generate sample JSON payloads for POST/PUT/PATCH endpoints. (JSON only)
+      </p>
+    </header>
+
+    <main>
+      <section class="panel">
+        <h2>Load spec</h2>
+        <form id="spec-form">
+          <div class="grid">
+            <label>Spec URL
+              <input type="url" name="specUrl" placeholder="https://example.com/openapi.json" />
+            </label>
+            <label>Or paste JSON below
+              <textarea name="specJson" rows="6" placeholder='{ "openapi": "3.0.0", ... }'></textarea>
+            </label>
+          </div>
+          <div class="actions">
+            <button type="submit">Load</button>
+            <span id="spec-status"></span>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel" id="op-panel" style="display:none;">
+        <div class="panel-head">
+          <h2>Generate payload</h2>
+          <button type="button" class="ghost" id="copy-payload">Copy payload</button>
+        </div>
+        <div class="grid">
+          <label>Endpoint & method
+            <select id="operation"></select>
+          </label>
+        </div>
+        <div class="actions">
+          <button type="button" id="generate">Generate payload</button>
+          <span id="gen-status"></span>
+        </div>
+        <div class="subhead">Payload</div>
+        <pre id="payload-viewer" class="viewer active"></pre>
+      </section>
+    </main>
+
+    <footer>
+      <small>Supports OpenAPI 3.x and Swagger 2.0 JSON specs. Outputs JSON only.</small>
+    </footer>
+
+    <script type="module" src="/swagger-datagen.js"></script>
+  </body>
+</html>

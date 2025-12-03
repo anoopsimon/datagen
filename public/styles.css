@@ -130,17 +130,24 @@ label {
 }
 
 input,
-select {
+select,
+textarea {
   padding: 10px;
   border-radius: 10px;
   border: 1px solid var(--border);
   background: #0c1328;
   color: var(--text);
+  font-family: inherit;
 }
 
 input:focus,
-select:focus {
+select:focus,
+textarea:focus {
   outline: 2px solid rgba(108, 241, 198, 0.35);
+}
+
+textarea {
+  min-height: 120px;
 }
 
 .actions {
